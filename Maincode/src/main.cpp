@@ -72,6 +72,9 @@ void opcontrol()
 	pros::MotorGroup driveright ({4, 5, 6});
 	pros::Motor intake(7);
 
+	pros::ADIDigitalOut clamp(12);
+	bool clampIn = false
+
 	int speed = 0;
 	int turning = 0;
 	int intakespinforward = 1;
@@ -81,14 +84,16 @@ void opcontrol()
 		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
 		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
 
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-		{
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
 			intakespinforward = 1;
 		}
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
-		{
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
 			intakespinforward = -1/4;
 		}
+		if (controller.get_digital_new_press(DIGITAL_R1)) {
+			clampIn = !clampIn;
+		}
+		clamp.set_value(clampIn)
 
 		intake.move(intakespinforward * 127);
 		driveleft.move(speed + turning);
