@@ -87,7 +87,7 @@ void opcontrol()
 		}
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			intakespinforward = -1;
+			intakespinforward = -1/4;
 		}
 
 		intake.move(intakespinforward * 127);
