@@ -70,9 +70,9 @@ void autonomous()
 void opcontrol()
 {
 	pros::Controller controller(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup driveleft ({1, 2, 3});
-	pros::MotorGroup driveright ({4, 5, 6});
-	pros::Motor intake(7);
+	pros::MotorGroup driveleft ({-11, -12, -13});
+	pros::MotorGroup driveright ({18, 19, 20});
+	pros::Motor intake(2);
 
 	int speed = 0;
 	int turning = 0;
@@ -85,11 +85,18 @@ void opcontrol()
 
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
 		{
-			intakespinforward = 1;
+			if(intakespinforward == 1)
+			{
+				intakespinforward = 0;
+			}
+			else
+			{
+				intakespinforward = 1;
+			}
 		}
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			intakespinforward = -1/4;
+			intakespinforward = -1;
 		}
 
 		intake.move(intakespinforward * 127);
