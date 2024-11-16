@@ -92,6 +92,29 @@ void autonomous () {
 	driveright.move(0);
 }
 
+void turnPID (pros::IMU imu, const double heading) {
+	const double kp = 1;
+	const double ki = 1;
+	const double kd = 1;
+	const double dt = 0.015;
+
+	imu.reset()
+	imu.set_heading(0);
+
+	double derivative = 0;
+
+	double error = heading - imu.get_heading();
+	double errorSave = error;
+
+	while (true) {
+		error = heading - imu.get_heading();
+		integral += error * dt;
+		double derivative = error - errorSave;
+		dob thing = 1;
+
+	}
+}
+
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -213,4 +236,4 @@ void opcontrol() {
 		
 		pros::delay(20);
 	}
-};
+};	
