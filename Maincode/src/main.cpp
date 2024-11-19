@@ -1,11 +1,9 @@
 #include "main.h"
-#include "lemlib/api.hpp"
+#include "pros/imu.hpp"
 
 pros::MotorGroup driveleft ({-11, -12, -13});
 pros::MotorGroup driveright ({18, 19, 20});
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
-
-imu.reset();
 
 void on_center_button()
 {
@@ -32,7 +30,7 @@ void turn(pros::IMU imu, const int heading)
 	int error = heading - imu.get_heading();
 	int power = 0;
 
-	imu::set_rotation(3, 0);
+	imu.set_rotation(0);
 
 	while (std::abs(error) > 1)
 	{
@@ -65,6 +63,7 @@ void turn(pros::IMU imu, const int heading)
 void autonomous ()
 {
 	pros::IMU imu (3);
+	imu.reset();
 }
 
 /**
@@ -131,8 +130,8 @@ void opcontrol()
 	int turning = 0;
 	int intakespinforward = 1;
 	float ladyBrownVelocity = 0.0;
-	bool intakeSave = NULL; //true = L1/forward, false = L2/backward
-	bool intakeCurrent = NULL;
+	bool intakeSave = true; //true = L1/forward, false = L2/backward
+	bool intakeCurrent = false;
 	bool L1pressed = false;
 	bool L2pressed = false;
 	bool clampIn = false;
