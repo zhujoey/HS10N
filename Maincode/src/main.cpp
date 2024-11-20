@@ -5,6 +5,9 @@
 pros::MotorGroup driveleft ({-11, -12, -13});
 pros::MotorGroup driveright ({18, 19, 20});
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
+pros::IMU imu (3);
+
+//will be too incovenient if these were not global
 
 void on_center_button()
 {
@@ -26,31 +29,30 @@ void competition_initialize()
 
 }
 
-void drive(pros::Distance sensor, const int distance)
+void drive(pros::Distance sensor, int distance)
 {
-	const int target = sensor.get() - distance;
-	int error = sensor.get() - target;
+	const int target = sensor.get() - distance; //gets target distance compared to initial distance
 	int power = 0;
 
-	while(error > 2)
+	while(distance > 2) //drives until error is less than 2mm
 	{
-		if (error > 127)
+		if (distance > 127) //max power
 		{
 			power = 127;
 		}
-		else if (error > 0)
+		else if (distance > 0) //power has a linear relation to distance left
 		{
-			power = error / 2 + 64;
+			power = distance / 2 + 64;
 		}
 		else
 		{
-			power = error / 2 - 64;
+			power = distance / 2 - 64;
 		}
 
 		driveleft.move(power);
 		driveright.move(power);
 
-		error = sensor.get() - target;;
+		distance = sensor.get() - target; //updates distance
 
 		pros::delay(15);
 	}
@@ -58,14 +60,14 @@ void drive(pros::Distance sensor, const int distance)
 
 void turn(pros::IMU imu, const int heading)
 {
-	int error = heading - imu.get_heading();
-	int power = 0;
+	imu.set_rotation(0); //resets rotation to make calculations easier
 
-	imu.set_rotation(0);
+	int error = heading;
+	int power = 0;
 
 	while (std::abs(error) > 1)
 	{
-		if (error > 127)
+		if (error > 127) //max power
 		{
 			power = 127;
 		}
@@ -73,7 +75,7 @@ void turn(pros::IMU imu, const int heading)
 		{
 			power = -127;
 		}
-		else if (error > 0)
+		else if (error > 0) //power has a linear relation to degrees left
 		{
 			power = error / 2 + 64;
 		}
@@ -85,7 +87,7 @@ void turn(pros::IMU imu, const int heading)
 		driveleft.move(power);
 		driveright.move(-power);
 
-		error = heading - imu.get_heading();
+		error = heading - imu.get_heading(); //updates error
 
 		pros::delay(15);
 	}
@@ -93,23 +95,8 @@ void turn(pros::IMU imu, const int heading)
 
 void autonomous ()
 {
-	pros::IMU imu (3);
-	imu.reset();
+	
 }
-
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
 
 class Intake
 {
@@ -161,18 +148,19 @@ void opcontrol()
 	int turning = 0;
 	int intakespinforward = 1;
 	float ladyBrownVelocity = 0.0;
-	bool intakeSave = true; //true = L1/forward, false = L2/backward
+	bool intakeSave = true;
 	bool intakeCurrent = false;
 	bool L1pressed = false;
 	bool L2pressed = false;
 	bool clampIn = false;
 	bool loadLadyBrown = false;
+	//definitions for everything else
 
 	ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	while (true)
 	{
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) //intake system
 		{
 			intake.registerClick(1);
 		}
@@ -181,7 +169,7 @@ void opcontrol()
 			intake.registerClick(-1);
 		}
 
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) //clamp toggle
 		{
 			clampIn = !clampIn;
 		}
@@ -215,14 +203,17 @@ void opcontrol()
 			loadLadyBrown = false;
 		}
 
-		ladyBrown.move_velocity(ladyBrownVelocity * 127);
-		intake.run(ladyBrownVelocity);
-		ladyBrownVelocity = 0;
-		clamp.set_value(clampIn);
 		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
 		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
+		ladyBrownVelocity = 0;
+
+		ladyBrown.move_velocity(ladyBrownVelocity * 127);
+		intake.run(ladyBrownVelocity);
+		clamp.set_value(clampIn);
 		driveleft.move(speed + turning);
 		driveright.move(speed - turning);
+
+		//moves everything
 		
 		pros::delay(15);
 	}
