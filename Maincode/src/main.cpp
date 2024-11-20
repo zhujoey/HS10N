@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/distance.hpp"
 #include "pros/imu.hpp"
 
 pros::MotorGroup driveleft ({-11, -12, -13});
@@ -23,6 +24,40 @@ void disabled()
 void competition_initialize()
 {
 
+}
+
+void drive(pros::Distance sensor, const int distance)
+{
+	const int target = sensor.get() - distance;
+	int error = sensor.get() - target;
+	int power = 0;
+
+	while(error > 2)
+	{
+		if (error > 127)
+		{
+			power = 127;
+		}
+		else if (error < -127)
+		{
+			power = -127;
+		}
+		else if (error > 0)
+		{
+			power = error / 2 + 64;
+		}
+		else
+		{
+			power = error / 2 - 64;
+		}
+
+		driveleft.move(power);
+		driveright.move(power);
+
+		error = sensor.get() - target;;
+
+		pros::delay(15);
+	}
 }
 
 void turn(pros::IMU imu, const int heading)
