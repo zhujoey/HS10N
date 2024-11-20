@@ -2,10 +2,11 @@
 #include "pros/distance.hpp"
 #include "pros/imu.hpp"
 
-pros::MotorGroup driveleft ({-11, -12, -13});
-pros::MotorGroup driveright ({18, 19, 20});
+pros::MotorGroup driveleft({-11, -12, -13});
+pros::MotorGroup driveright({18, 19, 20});
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
-pros::IMU imu (3);
+pros::IMU imu(3);
+pros::Distance sensor(4);
 
 //will be too incovenient if these were not global
 
