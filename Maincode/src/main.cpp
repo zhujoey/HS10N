@@ -38,10 +38,6 @@ void drive(pros::Distance sensor, const int distance)
 		{
 			power = 127;
 		}
-		else if (error < -127)
-		{
-			power = -127;
-		}
 		else if (error > 0)
 		{
 			power = error / 2 + 64;
