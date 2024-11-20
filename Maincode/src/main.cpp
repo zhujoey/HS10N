@@ -159,8 +159,8 @@ void opcontrol()
 {
 	Intake intake(2);
 	pros::Motor ladyBrown(1);
-	pros::ADIDigitalOut clamp (8);
-	pros::ADIDigitalIn limitSwitch(7);
+	pros::adi::DigitalOut clamp (8);
+	pros::adi::DigitalIn limitSwitch(7);
 	int speed = 0;
 	int turning = 0;
 	int intakespinforward = 1;
