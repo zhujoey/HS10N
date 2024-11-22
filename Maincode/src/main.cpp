@@ -1,12 +1,13 @@
 #include "main.h"
 #include "pros/distance.hpp"
 #include "pros/imu.hpp"
+#include "pros/optical.hpp"
 
 pros::MotorGroup driveleft({-11, -12, -13});
 pros::MotorGroup driveright({18, 19, 20});
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::IMU imu(3);
-pros::Distance sensor(4);
+pros::Optical optical(5);
 
 //will be too incovenient if these were not global
 
@@ -17,7 +18,7 @@ void on_center_button()
 
 void initialize()
 {
-
+	
 }
 
 void disabled()
@@ -145,6 +146,7 @@ void opcontrol()
 	pros::Motor ladyBrown(1);
 	pros::adi::DigitalOut clamp (8);
 	pros::adi::DigitalIn limitSwitch(7);
+	int color = 0;
 	int speed = 0;
 	int turning = 0;
 	int intakespinforward = 1;
@@ -206,16 +208,23 @@ void opcontrol()
 
 		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
 		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
+		color = optical.get_hue();
 		ladyBrownVelocity = 0;
 
 		ladyBrown.move_velocity(ladyBrownVelocity * 127);
-		intake.run(ladyBrownVelocity);
 		clamp.set_value(clampIn);
 		driveleft.move(speed + turning);
 		driveright.move(speed - turning);
 
+		if (color > 330 || color < 30) // sensing red
+		{
+			intake.run(0);
+			pros::delay(10);
+		}
+
+		intake.run(ladyBrownVelocity);
 		//moves everything
 		
 		pros::delay(15);
 	}
-};	
+};
