@@ -1,5 +1,5 @@
 #include "main.h"
-#include "pros/motors.hpp"
+#include "pros/misc.h"
 
 pros::MotorGroup driveleft ({-11, -12, -13});
 pros::MotorGroup driveright ({18, 19, 20});
@@ -12,6 +12,7 @@ pros::MotorGroup driveright ({18, 19, 20});
  */
 void on_center_button()
 {
+
 }
 
 /**
@@ -22,6 +23,7 @@ void on_center_button()
  */
 void initialize()
 {
+
 }
 
 /**
@@ -30,7 +32,9 @@ void initialize()
  * the robot is enabled, this task will exit.
  */
 void disabled()
-{}
+{
+
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -42,112 +46,56 @@ void disabled()
  * starts.
  */
 void competition_initialize()
-{}
-
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-
-/*
-void autonomous() {
-	pros::Motor leftFront  ( 13, pros::E_MOTOR_GEAR_BLUE);
-	pros::Motor leftMiddle ( 12, pros::E_MOTOR_GEAR_BLUE);
-	pros::Motor leftBack   (-11, pros::E_MOTOR_GEAR_BLUE);
-	
-	pros::Motor rightFront  (-18, pros::E_MOTOR_GEAR_BLUE);
-	pros::Motor rightMiddle (-19, pros::E_MOTOR_GEAR_BLUE);
-	pros::Motor rightBack   ( 20, pros::E_MOTOR_GEAR_BLUE);
-
-	pros::MotorGroup leftDrive ({leftFront, leftMiddle, leftBack});
-	pros::MotorGroup rightDrive ({rightFront, rightMiddle, rightBack});
-
-	// New 3.25” | 3.25 | lemlib::Omniwheel::NEW_325 
-
-	lemlib::Drivetrain drivetrain (&leftDrive, &rightDrive, 12, lemlib::Omniwheel::NEW_325, 600, 2);
-	lemlib::ControllerSettings lateralController (10, 0, 3, 3, 1, 100, 3, 500, 20);
-	lemlib::ControllerSettings angularController(2, 0, 10, 3, 1, 100, 3, 500, 0);
-
-	pros::IMU imu(1);
-	
-	lemlib::Chassis chassis(drivetrain, lateralController, angularController, NULL);
-	chassis.setPose(0, 0, 0);
-	chassis.turnToHeading(90, 100000);
-};
-*/
-
-
-void autonomous () {
+{
 
 }
 
+void autonomous()
+{
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+}
 
 void opcontrol()
 {
 	pros::Controller controller(pros::E_CONTROLLER_MASTER);
 	pros::Motor ladyBrown (1);
 	pros::Motor intake(2);
-	pros::IMU imu (10);
 	pros::adi::DigitalOut clamp (8);
 	pros::adi::DigitalIn limitSwitch(7);
 	int speed = 0;
 	int turning = 0;
-	int intakespinforward = 0;
 	bool L1pressed = false;
 	bool L2pressed = false;
 	bool clampIn = false;
-	bool up = true;
+	float upordown = 0.335; //tuned constant
 	float ladyBrownVelocity = 0;
+	float intakespeed = 0;
 	
 	ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-	while (true) {
-		// Arcade Drive
-		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
-		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
-
+	while (true)
+	{
 		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
 		{
-			if (intakespinforward == 1)
+			if (intakespeed == 1)
 			{
-				intakespinforward = 0;
+				intakespeed = 0;
 			}
 			else
 			{
-				intakespinforward = 1;
+				intakespeed = 1;
 			}
 		}
 
 		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			if (intakespinforward == -1)
+			if (intakespeed == -1)
 			{
-				intakespinforward = 0;
+				intakespeed = 0;
 			}
 			else
 			{
-				intakespinforward = -1;
+				intakespeed = -1;
 			}
 		}
 
@@ -156,43 +104,37 @@ void opcontrol()
 			clampIn = !clampIn;
 		}
 
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+		{
+			upordown *= -1;
+		}
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
 		{
 			ladyBrownVelocity = -1;
 		}
-
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
+		else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
 		{
 			ladyBrownVelocity = 1;
 		}
-
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) && !limitSwitch.get_value())
 		{
-			if (up)
-			{
-				ladyBrownVelocity = 0.5;
-			}
-			else
-			{
-				ladyBrownVelocity = -0.5;
-			}
+			intakespeed = 0.5;
+			ladyBrownVelocity = upordown;
 		}
-
-		if (limitSwitch.get_value())
+		else
 		{
-			up = !up;
 			ladyBrownVelocity = 0;
 		}
 
-		ladyBrown.move(ladyBrownVelocity * 127);
-		intake.move(127 * intakespinforward);
-		ladyBrownVelocity = 0;
-		clamp.set_value(clampIn);
+		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
+		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
 
-		//intake.move(intakespinforward * 127);
+		ladyBrown.move_velocity(ladyBrownVelocity * 200);
+		intake.move(127 * intakespeed);
+		clamp.set_value(clampIn);
 		driveleft.move(speed + turning);
 		driveright.move(speed - turning);
 		
 		pros::delay(20);
 	}
-};	
+};
