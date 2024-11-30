@@ -1,8 +1,10 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 
-pros::MotorGroup driveleft ({-11, -12, -13});
-pros::MotorGroup driveright ({18, 19, 20});
+pros::MotorGroup driveleft ({-11, -12, -13}, pros::MotorGearset::blue);
+pros::MotorGroup driveright ({18, 19, 20}, pros::MotorGearset::blue);
+lemlib::Drivetrain drivetrain( &driveleft, &driveright, 11.5, lemlib::Omniwheel::NEW_325, 600, 2);
+pros::Imu imu(3);
 
 /**
  * A callback function for LLEMU's center button.
