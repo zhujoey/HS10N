@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Maincode",
+    "project_name": "Drive",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -255,8 +255,8 @@
       }
     },
     "upload_options": {
-      "icon": "pizza",
-      "description": "Main Drive Code"
+      "icon": "clawbot",
+      "description": "Main drive code"
     },
     "use_early_access": false
   }

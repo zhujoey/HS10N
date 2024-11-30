@@ -1,5 +1,4 @@
 #include "main.h"
-#include "pros/misc.h"
 
 pros::MotorGroup driveleft ({-11, -12, -13});
 pros::MotorGroup driveright ({18, 19, 20});
@@ -61,13 +60,12 @@ void opcontrol()
 	pros::Motor ladyBrown (1);
 	pros::Motor intake(2);
 	pros::adi::DigitalOut clamp (8);
-	pros::adi::DigitalIn limitSwitch(7);
 	int speed = 0;
 	int turning = 0;
 	bool L1pressed = false;
 	bool L2pressed = false;
 	bool clampIn = false;
-	float upordown = 0.335; //tuned constant
+	bool moving = false;
 	float ladyBrownVelocity = 0;
 	float intakespeed = 0;
 	
@@ -104,24 +102,36 @@ void opcontrol()
 			clampIn = !clampIn;
 		}
 
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
-		{
-			upordown *= -1;
-		}
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
 		{
+			moving = false;
 			ladyBrownVelocity = -1;
 		}
 		else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
 		{
+			moving = false;
 			ladyBrownVelocity = 1;
 		}
-		else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) && !limitSwitch.get_value())
+		else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
+			moving = true;
 			intakespeed = 0.5;
-			ladyBrownVelocity = upordown;
+			if (ladyBrown.get_position() < 29)
+			{
+				ladyBrownVelocity = -1;
+			}
+			else if (ladyBrown.get_position() > 31)
+			{
+				ladyBrownVelocity = 1;
+			}
+			else
+			{
+				ladyBrownVelocity = 0;
+				moving = false;
+			}
 		}
-		else
+		
+		if (!moving)
 		{
 			ladyBrownVelocity = 0;
 		}
@@ -129,9 +139,9 @@ void opcontrol()
 		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
 		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
 
+		clamp.set_value(clampIn);
 		ladyBrown.move_velocity(ladyBrownVelocity * 200);
 		intake.move(127 * intakespeed);
-		clamp.set_value(clampIn);
 		driveleft.move(speed + turning);
 		driveright.move(speed - turning);
 		
