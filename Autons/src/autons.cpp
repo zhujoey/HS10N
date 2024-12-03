@@ -14,10 +14,10 @@ const int SWING_SPEED = 127;
 // Constants
 ///
 void default_constants() {
-  chassis.pid_heading_constants_set(11, 0, 20);
-  chassis.pid_drive_constants_set(20, 0, 100);
-  chassis.pid_turn_constants_set(3, 0.05, 20, 15);
-  chassis.pid_swing_constants_set(6, 0, 65);
+  chassis.pid_heading_constants_set(7.5, 0, 50);
+  chassis.pid_drive_constants_set(13.7, 5.3, 100, 2);
+  chassis.pid_turn_constants_set(3.1, 0.056, 21.87, 15);
+  chassis.pid_swing_constants_set(5, 0, 75);
 
   chassis.pid_turn_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
   chassis.pid_swing_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
@@ -39,13 +39,7 @@ void drive_example() {
   // The third parameter is a boolean (true or false) for enabling/disabling a slew at the start of drive motions
   // for slew, only enable it when the drive distance is greater than the slew distance + a few inches
 
-  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-12_in, DRIVE_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-12_in, DRIVE_SPEED);
+  chassis.pid_drive_set(23.75_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 }
 
@@ -57,12 +51,6 @@ void turn_example() {
   // The second parameter is max speed the robot will drive at
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
   chassis.pid_wait();
 }
 
@@ -123,16 +111,7 @@ void swing_example() {
   // The third parameter is the speed of the moving side of the drive
   // The fourth parameter is the speed of the still side of the drive, this allows for wider arcs
 
-  chassis.pid_swing_set(ez::LEFT_SWING, 45_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-
-  chassis.pid_swing_set(ez::RIGHT_SWING, 0_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-
-  chassis.pid_swing_set(ez::RIGHT_SWING, 45_deg, SWING_SPEED, 45);
-  chassis.pid_wait();
-
-  chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 45);
+  chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, SWING_SPEED, 0);
   chassis.pid_wait();
 }
 
