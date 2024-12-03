@@ -116,19 +116,7 @@ void opcontrol()
 		{
 			moving = true;
 			intakespeed = 0.5;
-			if (ladyBrown.get_position() < 29)
-			{
-				ladyBrownVelocity = -1;
-			}
-			else if (ladyBrown.get_position() > 31)
-			{
-				ladyBrownVelocity = 1;
-			}
-			else
-			{
-				ladyBrownVelocity = 0;
-				moving = false;
-			}
+			ladyBrown.move_absolute(30, 100);
 		}
 		
 		if (!moving)
