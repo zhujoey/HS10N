@@ -40,12 +40,11 @@ void initialize() {
   // chassis.opcontrol_curve_buttons_right_set(pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  ez::as::auton_selector.autons_add({
+  /*ez::as::auton_selector.autons_add({
     
-      Auton("Example Drive\n\nDrive forward and come back.", drive_example),
-      Auton("Example Turn\n\nTurn 3 times.", turn_example),
-      Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
-  });
+      Auton("Right side", right),
+      Auton("Left Side", left)
+  });*/
 
   // Initialize chassis and auton selector
   chassis.initialize();
@@ -92,7 +91,8 @@ void autonomous() {
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
 
-  ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+  //ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+  right();
 }
 
 /**

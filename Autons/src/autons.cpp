@@ -5,10 +5,15 @@
 // https://ez-robotics.github.io/EZ-Template/
 /////
 
+pros::ADIDigitalOut piston(8);
+pros::Motor intake(2);
+pros::Motor lb(1);
+
 // These are out of 127
 const int DRIVE_SPEED = 127;
 const int TURN_SPEED = 127;
 const int SWING_SPEED = 127;
+
 
 ///
 // Constants
@@ -194,6 +199,52 @@ void interfered_example() {
   }
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+}
+
+void right() {
+  lb.set_brake_mode(MOTOR_BRAKE_HOLD);
+  chassis.pid_swing_set(ez::LEFT_SWING, -30_deg, SWING_SPEED, 0);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-28.5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::RIGHT_SWING, -30_deg, SWING_SPEED, 0);
+  pros::delay(50);
+  piston.set_value(true);
+  chassis.pid_wait();
+  chassis.pid_turn_set(-100_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  intake.move_velocity(127);
+  chassis.pid_wait();
+  chassis.pid_turn_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  lb.move_velocity(-200);
+  chassis.pid_wait();
+}
+
+void left() {
+  lb.set_brake_mode(MOTOR_BRAKE_HOLD);
+  chassis.pid_swing_set(ez::RIGHT_SWING, 30_deg, SWING_SPEED, 0);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-28.5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::LEFT_SWING, 30_deg, SWING_SPEED, 0);
+  pros::delay(50);
+  piston.set_value(true);
+  chassis.pid_wait();
+  chassis.pid_turn_set(100_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  intake.move_velocity(127);
+  chassis.pid_wait();
+  chassis.pid_turn_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  intake.move_velocity(-100);
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  
+  lb.move_velocity(-200);
   chassis.pid_wait();
 }
 
