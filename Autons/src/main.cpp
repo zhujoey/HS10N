@@ -1,4 +1,5 @@
 #include "main.h"
+#include "autons.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -40,11 +41,11 @@ void initialize() {
   // chassis.opcontrol_curve_buttons_right_set(pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  /*ez::as::auton_selector.autons_add({
-    
-      Auton("Right side", right),
-      Auton("Left Side", left)
-  });*/
+  ez::as::auton_selector.autons_add({
+      Auton("Left", drive_and_turn),
+      Auton("Right", wait_until_change_speed),
+      Auton("Skills", motion_chaining),
+  });
 
   // Initialize chassis and auton selector
   chassis.initialize();
@@ -91,8 +92,7 @@ void autonomous() {
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
 
-  //ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
-  right();
+  ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
 }
 
 /**

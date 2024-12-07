@@ -1,3 +1,5 @@
+#include "EZ-Template/drive/drive.hpp"
+#include "EZ-Template/util.hpp"
 #include "main.h"
 
 /////
@@ -12,7 +14,7 @@ pros::Motor lb(1);
 // These are out of 127
 const int DRIVE_SPEED = 127;
 const int TURN_SPEED = 127;
-const int SWING_SPEED = 127;
+const int SWING_SPEED = 0;
 
 
 ///
@@ -44,7 +46,7 @@ void drive_example() {
   // The third parameter is a boolean (true or false) for enabling/disabling a slew at the start of drive motions
   // for slew, only enable it when the drive distance is greater than the slew distance + a few inches
 
-  chassis.pid_drive_set(23.75_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(10_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 }
 
@@ -63,19 +65,24 @@ void turn_example() {
 // Combining Turn + Drive
 ///
 void drive_and_turn() {
-  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
+  lb.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  chassis.pid_swing_set(ez::LEFT_SWING, -30_deg, SWING_SPEED, 0);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
+  chassis.pid_drive_set(-28.5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(-45_deg, TURN_SPEED);
+  chassis.pid_swing_set(ez::RIGHT_SWING, -30_deg, SWING_SPEED, 0);
+  pros::delay(50);
+  piston.set_value(true);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
+  chassis.pid_turn_set(-100_deg, TURN_SPEED);
   chassis.pid_wait();
-
-  chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  intake.move_velocity(127);
+  chassis.pid_wait();
+  chassis.pid_turn_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  lb.move_velocity(-200);
   chassis.pid_wait();
 }
 
@@ -83,27 +90,25 @@ void drive_and_turn() {
 // Wait Until and Changing Max Speed
 ///
 void wait_until_change_speed() {
-  // pid_wait_until will wait until the robot gets to a desired position
-
-  // When the robot gets to 6 inches slowly, the robot will travel the remaining distance at full speed
-  chassis.pid_drive_set(24_in, 30, true);
-  chassis.pid_wait_until(6_in);
-  chassis.pid_speed_max_set(DRIVE_SPEED);  // After driving 6 inches at 30 speed, the robot will go the remaining distance at DRIVE_SPEED
+  lb.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  chassis.pid_swing_set(ez::RIGHT_SWING, 30_deg, SWING_SPEED, 0);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
+  chassis.pid_drive_set(-28.5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(-45_deg, TURN_SPEED);
+  chassis.pid_swing_set(ez::LEFT_SWING, 30_deg, SWING_SPEED, 0);
+  pros::delay(50);
+  piston.set_value(true);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
+  chassis.pid_turn_set(100_deg, TURN_SPEED);
   chassis.pid_wait();
-
-  // When the robot gets to -6 inches slowly, the robot will travel the remaining distance at full speed
-  chassis.pid_drive_set(-24_in, 30, true);
-  chassis.pid_wait_until(-6_in);
-  chassis.pid_speed_max_set(DRIVE_SPEED);  // After driving 6 inches at 30 speed, the robot will go the remaining distance at DRIVE_SPEED
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  intake.move_velocity(127);
+  chassis.pid_wait();
+  chassis.pid_turn_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  intake.move_velocity(-100);
+  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
+  lb.move_velocity(-200);
   chassis.pid_wait();
 }
 
@@ -124,24 +129,34 @@ void swing_example() {
 // Motion Chaining
 ///
 void motion_chaining() {
-  // Motion chaining is where motions all try to blend together instead of individual movements.
-  // This works by exiting while the robot is still moving a little bit.
-  // To use this, replace pid_wait with pid_wait_quick_chain.
+  chassis.pid_drive_set(-14_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  piston.set_value(true);
+  intake.move_velocity(127);
+  chassis.pid_turn_set(180_deg, TURN_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(23_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_set(90_deg, TURN_SPEED, true);
+  chassis.pid_wait();
   chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
-  chassis.pid_wait_quick_chain();
-
-  chassis.pid_turn_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait_quick_chain();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
+  chassis.pid_turn_set(0_deg, TURN_SPEED, true);
   chassis.pid_wait();
-
-  // Your final motion should still be a normal pid_wait
-  chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(37.5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  chassis.pid_turn_set(225_deg,TURN_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_set(207_deg, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-30_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  piston.set_value(false);
+  chassis.pid_swing_set(ez::RIGHT_SWING, 90_deg, SWING_SPEED, 0);
+  chassis.pid_wait();
+  
 }
 
 ///
@@ -199,52 +214,6 @@ void interfered_example() {
   }
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-}
-
-void right() {
-  lb.set_brake_mode(MOTOR_BRAKE_HOLD);
-  chassis.pid_swing_set(ez::LEFT_SWING, -30_deg, SWING_SPEED, 0);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-28.5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_swing_set(ez::RIGHT_SWING, -30_deg, SWING_SPEED, 0);
-  pros::delay(50);
-  piston.set_value(true);
-  chassis.pid_wait();
-  chassis.pid_turn_set(-100_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
-  intake.move_velocity(127);
-  chassis.pid_wait();
-  chassis.pid_turn_set(135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
-  lb.move_velocity(-200);
-  chassis.pid_wait();
-}
-
-void left() {
-  lb.set_brake_mode(MOTOR_BRAKE_HOLD);
-  chassis.pid_swing_set(ez::RIGHT_SWING, 30_deg, SWING_SPEED, 0);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-28.5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_swing_set(ez::LEFT_SWING, 30_deg, SWING_SPEED, 0);
-  pros::delay(50);
-  piston.set_value(true);
-  chassis.pid_wait();
-  chassis.pid_turn_set(100_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
-  intake.move_velocity(127);
-  chassis.pid_wait();
-  chassis.pid_turn_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  intake.move_velocity(-100);
-  chassis.pid_drive_set(20_in, DRIVE_SPEED, true);
-  
-  lb.move_velocity(-200);
   chassis.pid_wait();
 }
 

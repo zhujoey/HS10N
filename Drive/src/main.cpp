@@ -1,5 +1,4 @@
 #include "main.h"
-#include "lemlib/api.hpp"
 #include <cmath>
 
 pros::MotorGroup driveleft ({-11, -12, -13});
