@@ -1,11 +1,14 @@
 #include "main.h"
+#include "pros/adi.hpp"
+#include "pros/misc.h"
 #include <cmath>
 
-pros::MotorGroup driveleft ({-11, -12, -13});
-pros::MotorGroup driveright ({18, 19, 20});
+pros::MotorGroup driveleft({-11, -12, -13});
+pros::MotorGroup driveright({18, 19, 20});
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
-pros::ADIDigitalOut clamp (8);
-pros::Motor ladyBrown (1);
+pros::ADIDigitalOut clamp(8);
+pros::ADIDigitalOut doinker(6);
+pros::Motor ladyBrown(1);
 
 class Intake {
 	public: 
@@ -73,32 +76,43 @@ void opcontrol() {
 
 	bool intakeSave = NULL; //true = L1/forward, false = L2/backward
 	bool intakeCurrent = NULL;
-
 	bool clampIn = false;
+	bool doinkerdown = false;
 	float ladyBrownVelocity = 0;
 	bool loadLadyBrown = false;
 
-	while (true) {
+	while (true)
+	{
 		// Arcade Drive
 		speed = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), 3) / 16129;
 		turning = pow(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), 3) / 16129;
 
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+		if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+		{
 			intake.registerClick(1);
 		}
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+		if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
+		{
 			intake.registerClick(-1);
 		}
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+		if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
+		{
 			clampIn = !clampIn;
 		}
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+		if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+		{
+			doinkerdown = !doinkerdown;
+		}
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+		{
 			ladyBrown.move_absolute(0, 200);
 		}
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+		{
 			ladyBrown.move_absolute(-120, 200);
 		}
-		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+		if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+		{
 			ladyBrown.move_absolute(-2.5 * 360, 200);
 			intake.intake.move_absolute(-360, 200);
 		}
@@ -106,8 +120,7 @@ void opcontrol() {
 		intake.run(ladyBrownVelocity);
 		ladyBrownVelocity = 0;
 		clamp.set_value(clampIn);
-
-		//intake.move(intakespinforward * 127);
+		doinker.set_value(doinkerdown);
 		driveleft.move(speed + turning);
 		driveright.move(speed - turning);
 		
