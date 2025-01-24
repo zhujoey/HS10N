@@ -13,12 +13,15 @@ const int SWING_SPEED = 127;
 
 pros::Motor intake(16);
 pros::ADIDigitalOut clampe('h');
+pros::ADIDigitalOut doink('a');
 
 ///
 // Constants
 ///
 void default_constants()
 {
+  chassis.drive_imu_scaler_set(1);
+
   chassis.pid_heading_constants_set(7.5, 0, 50);
   chassis.pid_drive_constants_set(13.7, 5.3, 100, 2);
   chassis.pid_turn_constants_set(3.1, 0.056, 21.87, 15);
@@ -35,10 +38,6 @@ void default_constants()
   chassis.slew_drive_constants_set(7_in, 80);
 }
 
-///
-// Drive Example
-///
-
 void skills()
 {
   intake.move(127);
@@ -52,44 +51,43 @@ void skills()
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
   clampe.set_value(true);
-  pros::delay(1000);
+  pros::delay(500);
   chassis.pid_wait();
   intake.move(127);
   // mogo
-  chassis.pid_turn_set(0 ,TURN_SPEED);
+  chassis.pid_turn_set(0, TURN_SPEED);
   chassis.pid_wait();
   intake.move(127);
   chassis.pid_drive_set(24, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-56.31,TURN_SPEED);
+  chassis.pid_turn_set(-56.31, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(38, DRIVE_SPEED);
   chassis.pid_wait();
   pros::delay(250);
-  chassis.pid_turn_set(-90,TURN_SPEED);
+  chassis.pid_turn_set(-90, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-7.62, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-180,TURN_SPEED);
+  chassis.pid_turn_set(-180, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(57.08, DRIVE_SPEED / 3);
+  chassis.pid_drive_set(57.08, DRIVE_SPEED / 2);
   chassis.pid_wait_until(45.08);
   chassis.pid_speed_max_set(DRIVE_SPEED / 4);
   chassis.pid_wait();
-  pros::delay(500);
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-135,TURN_SPEED);
+  chassis.pid_turn_set(-135, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(16.97, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-90,TURN_SPEED);
+  chassis.pid_turn_set(-90, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-12, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(45,TURN_SPEED);
+  chassis.pid_turn_set(45, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-15, DRIVE_SPEED / 3);
+  chassis.pid_drive_set(-15, DRIVE_SPEED / 2);
   chassis.pid_wait();
   clampe.set_value(false);
   intake.move(-127);
@@ -98,59 +96,131 @@ void skills()
   // positive corner
   chassis.pid_drive_set(15, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-90,TURN_SPEED);
+  chassis.pid_turn_set(-90, TURN_SPEED);
   chassis.pid_wait();
   pros::delay(250);
-  chassis.pid_drive_set(23, DRIVE_SPEED / 3);
+  chassis.pid_drive_set(24, DRIVE_SPEED / 2);
   chassis.pid_wait();
   chassis.pid_drive_set(-74.7, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(-12, DRIVE_SPEED / 2);
   chassis.pid_wait_quick_chain();
   clampe.set_value(true);
-  pros::delay(1000);
+  pros::delay(500);
   intake.move(127);
-  chassis.pid_turn_set(0,TURN_SPEED);
+  chassis.pid_turn_set(0, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(24, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(56.31,TURN_SPEED);
+  chassis.pid_turn_set(56.31, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(36, DRIVE_SPEED);
   chassis.pid_wait();
   pros::delay(250);
-  chassis.pid_turn_set(90,TURN_SPEED);
+  chassis.pid_turn_set(90, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-5.95, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(176,TURN_SPEED * 0.75);
+  chassis.pid_turn_set(178, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(45.08, DRIVE_SPEED / 3);
+  chassis.pid_drive_set(45.08, DRIVE_SPEED / 2);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(12, DRIVE_SPEED / 4);
   chassis.pid_wait();
-  pros::delay(500);
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
-  pros::delay(500);
-  chassis.pid_turn_set(135,TURN_SPEED);
+  chassis.pid_turn_set(135, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(16.97, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(90,TURN_SPEED);
+  chassis.pid_turn_set(90, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-12, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-45,TURN_SPEED);
+  chassis.pid_turn_set(-45, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-15, DRIVE_SPEED / 3);
+  chassis.pid_drive_set(-15, DRIVE_SPEED / 2);
   chassis.pid_wait();
   clampe.set_value(false);
   intake.move(-127);
   pros::delay(250);
   intake.move(0);
-  chassis.pid_drive_set(15, DRIVE_SPEED);
+  chassis.pid_drive_set(10, DRIVE_SPEED);
   chassis.pid_wait();
+  chassis.pid_turn_set(-45, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(72.88, DRIVE_SPEED);
+  chassis.pid_wait();
+  intake.move(127);
+  pros::delay(750);
+  intake.move(0);
+  chassis.pid_turn_set(26.57, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(28.76, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(150, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-25.72, DRIVE_SPEED);
+  chassis.pid_wait();
+  clampe.set_value(true);
+  pros::delay(1000);
+  intake.move(127);
+  chassis.pid_turn_set(135, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(33.94, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(90, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(0, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(10, DRIVE_SPEED);
+  chassis.pid_wait();
+  doink.set_value(true);
+  chassis.pid_turn_set(-60, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(0, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(14, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(-60, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(0, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(12, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(135, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(16.97, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(90, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-12, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(225, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-15, DRIVE_SPEED);
+  chassis.pid_wait();
+  clampe.set_value(false);
+  intake.move(-127);
+  pros::delay(250);
+  intake.move(0);
+  chassis.pid_drive_set(1.97, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(90, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-36, DRIVE_SPEED);
+  chassis.pid_wait();
+  clampe.set_value(true);
+  chassis.pid_turn_set(187.13, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-96.75, DRIVE_SPEED);
+  chassis.pid_wait();
+  clampe.set_value(false);
+  intake.move(-127);
+  pros::delay(250);
+  intake.move(0);
 }
 
 void drive_example() {
@@ -430,7 +500,7 @@ void measure_offsets() {
   if (chassis.odom_tracker_right != nullptr) chassis.odom_tracker_right->reset();
   if (chassis.odom_tracker_back != nullptr) chassis.odom_tracker_back->reset();
   if (chassis.odom_tracker_front != nullptr) chassis.odom_tracker_front->reset();
-  
+ 
   for (int i = 0; i < iterations; i++) {
     // Reset pid targets and get ready for running an auton
     chassis.pid_targets_reset();

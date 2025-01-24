@@ -247,7 +247,7 @@ void opcontrol()
 {
   pros::Controller controller(pros::E_CONTROLLER_MASTER);
   pros::Motor intake(16);
-  pros::ADIDigitalOut clamp('h');
+  pros::ADIDigitalOut clampe('h');
   short intakeDirection = 0;
   bool clampDown = false;
   
@@ -287,7 +287,7 @@ void opcontrol()
     clampDown = !clampDown;
   }
     
-    clamp.set_value(clampDown);
+    clampe.set_value(clampDown);
     intake.move(127 * intakeDirection);
 
     pros::delay(ez::util::DELAY_TIME);
