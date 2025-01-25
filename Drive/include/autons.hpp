@@ -1,8 +1,11 @@
 #pragma once
 
 void default_constants();
-
 void skills();
+void redleft();
+void redright();
+void blueleft();
+void blueright();
 void drive_example();
 void turn_example();
 void drive_and_turn();

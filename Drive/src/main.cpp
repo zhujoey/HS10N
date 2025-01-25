@@ -1,4 +1,5 @@
 #include "main.h"
+#include "autons.hpp"
 #include "pros/misc.h"
 #include "pros/misc.hpp"
 #include "pros/motors.hpp"
@@ -62,6 +63,10 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
       {"Skills code", skills},
+      {"Red left side", redleft},
+      {"Red right side", redright},
+      {"Blue left side", blueleft},
+      {"Blue right side", blueright},
       {"Drive\n\nDrive forward and come back", drive_example},
       {"Turn\n\nTurn 3 times.", turn_example},
       {"Drive and Turn\n\nDrive forward, turn, come back", drive_and_turn},
