@@ -37,6 +37,10 @@ void default_constants()
   chassis.pid_drive_chain_constant_set(3_in);
 
   chassis.slew_drive_constants_set(7_in, 80);
+
+  chassis.slew_drive_set(false);
+  chassis.slew_turn_set(false);
+  chassis.pid_turn_behavior_set(ez::shortest);
 }
 
 void check()
@@ -51,7 +55,6 @@ void check()
 
 void skills()
 {
-  chassis.pid_turn_behavior_set(ez::shortest);
   intake.move(127);
   pros::delay(500);
   intake.move(0);
@@ -305,7 +308,6 @@ void redleft()
 
 void redright()
 {
-  chassis.pid_turn_behavior_set(ez::shortest);
   chassis.pid_drive_set(-41.22, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_turn_set(30, TURN_SPEED);
@@ -357,7 +359,6 @@ void redright()
 
 void blueleft()
 {
-  chassis.pid_turn_behavior_set(ez::shortest);
   chassis.pid_drive_set(-41.22, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_turn_set(-30, TURN_SPEED);
@@ -484,13 +485,7 @@ void turn_example() {
   // The first parameter is the target in degrees
   // The second parameter is max speed the robot will drive at
 
-  chassis.pid_turn_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(0_deg, TURN_SPEED);
+  chassis.pid_turn_set(3600, TURN_SPEED);
   chassis.pid_wait();
 }
 

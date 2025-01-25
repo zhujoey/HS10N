@@ -62,7 +62,7 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      {"Skills code", skills},
+      {"Skills", skills},
       {"Red left side", redleft},
       {"Red right side", redright},
       {"Blue left side", blueleft},
