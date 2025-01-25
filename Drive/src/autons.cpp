@@ -49,7 +49,7 @@ void check()
   {
     intake.move(-127);
     pros::delay(500);
-    intake.move(0);
+    intake.move(127);
   }
 }
 
