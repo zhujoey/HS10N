@@ -291,11 +291,15 @@ void redleft()
   chassis.pid_drive_set(6, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   intake.move(127);
-  pros::delay(500);
+  pros::delay(250);
   intake.move(0);
   chassis.pid_drive_set(-6, DRIVE_SPEED);
   chassis.pid_wait();
   intake.move(127);
+  pros::delay(1000);
+  intake.move(0);
+  chassis.pid_drive_set(20, DRIVE_SPEED);
+  chassis.pid_wait();
 }
 
 void redright()
@@ -448,6 +452,10 @@ void blueright()
   chassis.pid_drive_set(-6, DRIVE_SPEED);
   chassis.pid_wait();
   intake.move(127);
+  pros::delay(1000);
+  intake.move(0);
+  chassis.pid_drive_set(20, DRIVE_SPEED);
+  chassis.pid_wait();
 }
 
 void drive_example() {
