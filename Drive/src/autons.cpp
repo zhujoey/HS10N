@@ -51,6 +51,7 @@ void check()
 
 void skills()
 {
+  chassis.pid_turn_behavior_set(ez::shortest);
   intake.move(127);
   pros::delay(500);
   intake.move(0);
@@ -174,11 +175,11 @@ void skills()
   intake.move(127);
   pros::delay(500);
   intake.move(0);
-  chassis.pid_turn_set(26.57, TURN_SPEED);
+  chassis.pid_turn_set(-26.57, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(28.76, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(150, TURN_SPEED);
+  chassis.pid_turn_set(-150, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-25.72, DRIVE_SPEED);
   chassis.pid_wait();
@@ -304,6 +305,7 @@ void redleft()
 
 void redright()
 {
+  chassis.pid_turn_behavior_set(ez::shortest);
   chassis.pid_drive_set(-41.22, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_turn_set(30, TURN_SPEED);
@@ -330,24 +332,24 @@ void redright()
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
   clampe.set_value(true);
-  chassis.pid_turn_set(405, TURN_SPEED);
+  chassis.pid_turn_set(45, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(33.94, DRIVE_SPEED);
   chassis.pid_wait();
   intake.move(127);
   pros::delay(250);
   intake.move(0);
-  chassis.pid_turn_set(360, TURN_SPEED);
+  chassis.pid_turn_set(0, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   intake.move(-127);
-  chassis.pid_turn_set(405, TURN_SPEED);
+  chassis.pid_turn_set(45, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   intake.move(127);
   chassis.pid_drive_set(16, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(-16, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
-  chassis.pid_turn_set(540, TURN_SPEED);
+  chassis.pid_turn_set(180, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(16, DRIVE_SPEED);
   chassis.pid_wait();
@@ -355,6 +357,7 @@ void redright()
 
 void blueleft()
 {
+  chassis.pid_turn_behavior_set(ez::shortest);
   chassis.pid_drive_set(-41.22, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_turn_set(-30, TURN_SPEED);
@@ -381,23 +384,23 @@ void blueleft()
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
   clampe.set_value(true);
-  chassis.pid_turn_set(-405, TURN_SPEED);
+  chassis.pid_turn_set(-45, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(33.94, DRIVE_SPEED);
   intake.move(127);
   pros::delay(250);
   intake.move(0);
-  chassis.pid_turn_set(-360, TURN_SPEED);
+  chassis.pid_turn_set(-0, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   intake.move(-127);
-  chassis.pid_turn_set(-405, TURN_SPEED);
+  chassis.pid_turn_set(-45, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   intake.move(127);
   chassis.pid_drive_set(16, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(-16, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
-  chassis.pid_turn_set(-540, TURN_SPEED);
+  chassis.pid_turn_set(-180, TURN_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(16, DRIVE_SPEED);
   chassis.pid_wait();

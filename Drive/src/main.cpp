@@ -294,7 +294,7 @@ void opcontrol()
     clampDown = !clampDown;
   }
 
-  if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+  if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
   {
     doinkDown = !doinkDown;
   }
