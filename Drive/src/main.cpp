@@ -253,8 +253,10 @@ void opcontrol()
   pros::Controller controller(pros::E_CONTROLLER_MASTER);
   pros::Motor intake(16);
   pros::ADIDigitalOut clampe('h');
+  pros::ADIDigitalOut doink('a');
   short intakeDirection = 0;
   bool clampDown = false;
+  bool doinkDown = false;
   
   chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
@@ -290,6 +292,11 @@ void opcontrol()
   if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
   {
     clampDown = !clampDown;
+  }
+
+  if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+  {
+    doinkDown = !doinkDown;
   }
     
     clampe.set_value(clampDown);
