@@ -128,7 +128,7 @@ void autonomous() {
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
   chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
-
+  skills();
   /*
   Odometry and Pure Pursuit are not magic
 
@@ -142,7 +142,7 @@ void autonomous() {
   to be consistent
   */
 
-  ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+  //ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
 }
 
 /**
@@ -252,9 +252,13 @@ void opcontrol()
 {
   pros::Controller controller(pros::E_CONTROLLER_MASTER);
   pros::Motor intake(16);
+  pros::Motor lbleft(7);
+  pros::Motor lbright(-17);
+  pros::Optical colorsensor(21);
   pros::ADIDigitalOut clampe('h');
   pros::ADIDigitalOut doink('a');
   short intakeDirection = 0;
+  short lbdirection = 0;
   bool clampDown = false;
   bool doinkDown = false;
   
@@ -289,16 +293,56 @@ void opcontrol()
       }
     }
 
-  if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
-  {
-    clampDown = !clampDown;
-  }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
+    {
+      clampDown = !clampDown;
+    }
 
-  if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
-  {
-    doinkDown = !doinkDown;
-  }
-    
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+    {
+      doinkDown = !doinkDown;
+    }
+
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+    {
+      if (lbdirection == 0)
+      {
+        ++lbdirection;
+      }
+      else if (lbdirection == 1)
+      {
+        ++lbdirection;
+      }
+      else if (lbdirection == 2)
+      {
+        lbdirection = 0;
+      }
+
+      if (lbdirection == 0)
+      {
+        lbleft.move_absolute(0, 200);
+        lbright.move_absolute(0, 200);
+      }
+      else if (lbdirection == 1)
+      {
+        lbleft.move_absolute(350, 200);
+        lbright.move_absolute(350, 200);
+      }
+      else if (lbdirection == 2)
+      {
+        lbleft.move_absolute(1800, 200);
+        lbright.move_absolute(1800, 200);
+        intake.move_relative(-10, -600);
+      }
+    }
+
+    if (colorsensor.get_hue() <= 210 && colorsensor.get_hue() >= 190)
+    {
+      intake.move_relative(50, 600);
+      intake.move(0);
+    }
+
+    doink.set_value(doinkDown);
     clampe.set_value(clampDown);
     intake.move(127 * intakeDirection);
 
