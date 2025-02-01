@@ -128,7 +128,7 @@ void autonomous() {
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
   chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
-  skills();
+  redright();
   /*
   Odometry and Pure Pursuit are not magic
 
@@ -261,6 +261,9 @@ void opcontrol()
   short lbdirection = 0;
   bool clampDown = false;
   bool doinkDown = false;
+
+  lbleft.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  lbright.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   
   chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
@@ -325,8 +328,8 @@ void opcontrol()
       }
       else if (lbdirection == 1)
       {
-        lbleft.move_absolute(350, 200);
-        lbright.move_absolute(350, 200);
+        lbleft.move_absolute(250, 200);
+        lbright.move_absolute(250, 200);
       }
       else if (lbdirection == 2)
       {
