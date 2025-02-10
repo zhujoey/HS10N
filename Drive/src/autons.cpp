@@ -20,9 +20,9 @@ pros::Motor lbright(-17);
 ///
 // Constants
 ///
-//front of bot to middle: 9 in
-//back of bot to middle: 6.7 in
-//with mogo: 13.4 in
+//front of bot to middle: 7.75 in
+//width: 13.5 in
+//with mogo: 14 in
 
 void default_constants()
 {
