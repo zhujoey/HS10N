@@ -11,7 +11,7 @@ const int DRIVE_SPEED = 127;
 const int TURN_SPEED = 127;
 const int SWING_SPEED = 127;
 
-pros::Motor intake(16);
+pros::Motor intake(12);
 pros::ADIDigitalOut clampe('h');
 pros::ADIDigitalOut doink('a');
 pros::Motor lbleft(7);
@@ -22,7 +22,7 @@ pros::Motor lbright(-17);
 ///
 //front of bot to middle: 7.75 in
 //width: 13.5 in
-//with mogo: 14 in
+//with mogo: 15 in
 
 void default_constants()
 {

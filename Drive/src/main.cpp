@@ -12,8 +12,8 @@
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
-    {-11,-19, 20},     // Left Chassis Ports (negative port will reverse it!)
-    {1, 9, -10},  // Right Chassis Ports (negative port will reverse it!)
+    {-11,-13, -14},     // Left Chassis Ports (negative port will reverse it!)
+    {-18, 19, 10},  // Right Chassis Ports (negative port will reverse it!)
 
     2,      // IMU Port
     3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
@@ -251,7 +251,7 @@ void ez_template_extras() {
 void opcontrol()
 {
   pros::Controller controller(pros::E_CONTROLLER_MASTER);
-  pros::Motor intake(16);
+  pros::Motor intake(-12);
   pros::Motor lbleft(7);
   pros::Motor lbright(-17);
   pros::Optical colorsensor(21);
