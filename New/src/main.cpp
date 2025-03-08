@@ -16,7 +16,7 @@ ez::Drive chassis(
     {-14, -11,1},     // Left Chassis Ports (negative port will reverse it!)
     {19, 17, -18},  // Right Chassis Ports (negative port will reverse it!)
 
-    2,      // IMU Port
+    9,      // IMU Port
     3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     450);   // Wheel RPM = cartridge * (motor gear / wheel gear)
 

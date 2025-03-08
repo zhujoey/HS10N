@@ -11,7 +11,7 @@ const int DRIVE_SPEED = 127;
 const int TURN_SPEED = 127;
 const int SWING_SPEED = 127;
 
-pros::Motor intake(-12);
+pros::Motor intake(12);
 pros::ADIDigitalOut clampe('a');
 pros::ADIDigitalOut doink('h');
 pros::Motor lbleft(7);
