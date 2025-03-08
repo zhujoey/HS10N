@@ -2,6 +2,7 @@
 #include "autons.hpp"
 #include "pros/misc.h"
 #include "pros/misc.hpp"
+#include "pros/motors.h"
 #include "pros/motors.hpp"
 
 /////
@@ -12,8 +13,8 @@
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
-    {-11,-13, -14},     // Left Chassis Ports (negative port will reverse it!)
-    {-18, 19, 10},  // Right Chassis Ports (negative port will reverse it!)
+    {-14, -11,1},     // Left Chassis Ports (negative port will reverse it!)
+    {19, 17, -18},  // Right Chassis Ports (negative port will reverse it!)
 
     2,      // IMU Port
     3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
@@ -122,13 +123,13 @@ void competition_initialize() {
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {
+ void autonomous() {
   chassis.pid_targets_reset();                // Resets PID targets to 0
   chassis.drive_imu_reset();                  // Reset gyro position to 0
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
   chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
-  redright();
+
   /*
   Odometry and Pure Pursuit are not magic
 
@@ -142,7 +143,7 @@ void autonomous() {
   to be consistent
   */
 
-  //ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+  ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
 }
 
 /**
@@ -204,7 +205,7 @@ pros::Task ezScreenTask(ez_screen_task);
  *     is only enabled when you're not connected to competition control.
  * - gives you a GUI to change your PID values live by pressing X
  */
-void ez_template_extras() {
+ void ez_template_extras() {
   // Only run this when not connected to a competition switch
   if (!pros::competition::is_connected()) {
     // PID Tuner
@@ -255,8 +256,8 @@ void opcontrol()
   pros::Motor lbleft(7);
   pros::Motor lbright(-17);
   pros::Optical colorsensor(21);
-  pros::ADIDigitalOut clampe('h');
-  pros::ADIDigitalOut doink('a');
+  pros::ADIDigitalOut clampe('a');
+  pros::ADIDigitalOut doink('h');
   short intakeDirection = 0;
   short lbdirection = 0;
   bool clampDown = false;
@@ -264,8 +265,8 @@ void opcontrol()
 
   lbleft.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   lbright.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  chassis.drive_brake_set(MOTOR_BRAKE_HOLD);
   
-  chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
   while (true)
   {
@@ -274,18 +275,6 @@ void opcontrol()
 
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
     {
-      if (intakeDirection == 1)
-      {
-        intakeDirection = 0;
-      }
-      else
-      {
-        intakeDirection = 1;
-      }
-    }
-
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
-    {
       if (intakeDirection == -1)
       {
         intakeDirection = 0;
@@ -293,6 +282,18 @@ void opcontrol()
       else
       {
         intakeDirection = -1;
+      }
+    }
+
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+      if (intakeDirection == 1)
+      {
+        intakeDirection = 0;
+      }
+      else
+      {
+        intakeDirection = 1;
       }
     }
 

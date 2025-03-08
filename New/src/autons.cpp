@@ -12,8 +12,8 @@ const int TURN_SPEED = 127;
 const int SWING_SPEED = 127;
 
 pros::Motor intake(-12);
-pros::ADIDigitalOut clampe('h');
-pros::ADIDigitalOut doink('a');
+pros::ADIDigitalOut clampe('a');
+pros::ADIDigitalOut doink('h');
 pros::Motor lbleft(7);
 pros::Motor lbright(-17);
 
@@ -218,6 +218,11 @@ void skills()
   chassis.pid_drive_set(-33.85, DRIVE_SPEED);
   chassis.pid_wait();
   clampe.set_value(false);
+  intake.move(-127);
+  pros::delay(100);
+  intake.move(0);
+  chassis.pid_drive_set(33.85, DRIVE_SPEED);
+  chassis.pid_wait();
 }
 
 void blueright()
@@ -320,6 +325,11 @@ void blueleft()
   chassis.pid_wait();
   chassis.pid_drive_set(40, DRIVE_SPEED);
   chassis.pid_wait();
+}
+
+void redleft()
+{
+
 }
 
 void drive_example() {

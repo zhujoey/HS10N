@@ -223,9 +223,9 @@ double clamp(double input, double max);
 const bool SD_CARD_ACTIVE = pros::usd::is_installed();
 
 /**
- * Delay time for tasks, this is set to 20 ms.
+ * Delay time for tasks, this is set to 10 ms.
  */
-const int DELAY_TIME = 20;
+const int DELAY_TIME = 10;
 
 /**
  * Converts radians to degrees.
