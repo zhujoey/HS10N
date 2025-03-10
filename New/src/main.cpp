@@ -253,25 +253,25 @@ void opcontrol()
 {
   pros::Controller controller(pros::E_CONTROLLER_MASTER);
   pros::Motor intake(-12);
-  pros::Motor lbleft(7);
-  pros::Motor lbright(-17);
+  pros::MotorGroup lb ({8, -3});
   pros::Optical colorsensor(21);
-  pros::ADIDigitalOut clampe('a');
-  pros::ADIDigitalOut doink('h');
+  pros::adi::DigitalOut clampe('a');
+  pros::adi::DigitalOut leftDoink('b');
   short intakeDirection = 0;
-  short lbdirection = 0;
+  short lbMode = 0;
+  short lbSpeed = 0;
   bool clampDown = false;
-  bool doinkDown = false;
-
-  lbleft.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  lbright.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  chassis.drive_brake_set(MOTOR_BRAKE_HOLD);
-  
+  bool leftDoinkDown = false;
+  bool isLbMoving = false;
+ 
+  lb.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+  chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
   while (true)
   {
     ez_template_extras();
     chassis.opcontrol_arcade_standard(ez::SPLIT);
+    lbSpeed = 0;
 
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
     {
@@ -304,51 +304,63 @@ void opcontrol()
 
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
     {
-      doinkDown = !doinkDown;
+      leftDoinkDown = !leftDoinkDown;
     }
 
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
     {
-      if (lbdirection == 0)
-      {
-        ++lbdirection;
-      }
-      else if (lbdirection == 1)
-      {
-        ++lbdirection;
-      }
-      else if (lbdirection == 2)
-      {
-        lbdirection = 0;
-      }
+      ++lbMode;
+      lbMode %= 3;
+      isLbMoving = true;
 
-      if (lbdirection == 0)
+      if (lbMode == 0)
       {
-        lbleft.move_absolute(0, 200);
-        lbright.move_absolute(0, 200);
+        lbSpeed = -1;
+        lb.move_absolute(0, 200);
       }
-      else if (lbdirection == 1)
+      else if (lbMode == 1)
       {
-        lbleft.move_absolute(250, 200);
-        lbright.move_absolute(250, 200);
+        lbSpeed = 1;
+        lb.move_absolute(250, 200);
       }
-      else if (lbdirection == 2)
+      else if (lbMode == 2)
       {
-        lbleft.move_absolute(1800, 200);
-        lbright.move_absolute(1800, 200);
-        intake.move_relative(-10, -600);
+        lbSpeed = 1;
+        intake.move(127);
+        pros::delay(75);
+        lb.move_absolute(1150, 200);
       }
     }
 
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+    {
+      lbSpeed = 1;
+      lbMode = 0;
+      isLbMoving = false;
+    }
+
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    {
+      lbSpeed = -1;
+      lbMode = 0;
+      isLbMoving = false;
+    }
+
+/*
     if (colorsensor.get_hue() <= 210 && colorsensor.get_hue() >= 190)
     {
       intake.move_relative(50, 600);
       intake.move(0);
     }
+*/
 
-    doink.set_value(doinkDown);
+    leftDoink.set_value(leftDoinkDown);
     clampe.set_value(clampDown);
     intake.move(127 * intakeDirection);
+    if (!isLbMoving)
+    {
+      lb.move(lbSpeed * 127);
+    }
 
     pros::delay(ez::util::DELAY_TIME);
   }

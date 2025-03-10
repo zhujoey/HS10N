@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/motors.h"
 #include "pros/rtos.hpp"
 
 /////
@@ -16,6 +17,7 @@ pros::ADIDigitalOut clampe('a');
 pros::ADIDigitalOut doink('h');
 pros::Motor lbleft(7);
 pros::Motor lbright(-17);
+pros::MotorGroup lbe ({8, -3});
 
 ///
 // Constants
@@ -52,6 +54,7 @@ void default_constants()
 
 void skills()
 {
+  lbe.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
   clampe.set_value(false);
   doink.set_value(false);
   lbleft.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -67,7 +70,6 @@ void skills()
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
   clampe.set_value(true);
-  pros::delay(500);
   chassis.pid_wait();
   intake.move(127);
   // mogo
@@ -75,20 +77,35 @@ void skills()
   chassis.pid_wait();
   chassis.pid_drive_set(24, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-56.31, TURN_SPEED);
+  chassis.pid_turn_set(-36.87, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(38, DRIVE_SPEED);
+  chassis.pid_drive_set(30, DRIVE_SPEED);
   chassis.pid_wait();
+  chassis.pid_turn_set(-14.04, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24.74, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_set(0, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-24, DRIVE_SPEED);
+  chassis.pid_wait();
+  lbe.move_absolute(250, 200);
   chassis.pid_turn_set(-90, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-7.62, DRIVE_SPEED);
+  chassis.pid_drive_set(9.75, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_turn_set(-180, TURN_SPEED);
+  intake.move(-127);
+  pros::delay(75);
+  intake.move(0);
+  lbe.move_absolute(1150, 200);
+  pros::delay(1000);
+  chassis.pid_drive_set(-9.75, DRIVE_SPEED / 3);
   chassis.pid_wait();
-  chassis.pid_drive_set(37.08, DRIVE_SPEED);
-  chassis.pid_wait_quick_chain();
-  chassis.pid_drive_set(20, DRIVE_SPEED / 3);
-  chassis.pid_wait_quick_chain();
+  lbe.move_absolute(0, 200);
+  chassis.pid_turn_set(180, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(60, DRIVE_SPEED);
+  chassis.pid_wait();
   chassis.pid_drive_set(-24, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_set(-135, TURN_SPEED);
