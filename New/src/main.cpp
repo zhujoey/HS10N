@@ -252,7 +252,7 @@ pros::Task ezScreenTask(ez_screen_task);
 void opcontrol()
 {
   pros::Controller controller(pros::E_CONTROLLER_MASTER);
-  pros::Motor intake(-12);
+  pros::Motor intake(16);
   pros::MotorGroup lb ({8, -3});
   pros::Optical colorsensor(21);
   pros::adi::DigitalOut clampe('a');
@@ -326,8 +326,6 @@ void opcontrol()
       else if (lbMode == 2)
       {
         lbSpeed = 1;
-        intake.move(127);
-        pros::delay(75);
         lb.move_absolute(1150, 200);
       }
     }
