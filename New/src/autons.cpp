@@ -131,16 +131,23 @@ void skills()
   pros::delay(200);
   intake.move(0);
   // corner
-  chassis.pid_drive_set(11.5, DRIVE_SPEED);
+  chassis.pid_drive_set(11, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_set(-89, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-61, DRIVE_SPEED);
+  /*chassis.pid_drive_set(-61, DRIVE_SPEED);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(-12, DRIVE_SPEED / 2);
-  chassis.pid_wait();
+  chassis.pid_wait();*/
   // travel to other side
+  chassis.pid_odom_set({{15_in, 3_in, 90_deg}, rev, DRIVE_SPEED / 2});
+  chassis.pid_wait();
+  chassis.pid_turn_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-10_in, DRIVE_SPEED / 2);
+  chassis.pid_wait_quick();
   clampe.set_value(true);
+  chassis.pid_wait();
   intake.move(127);
   // mogo
   chassis.pid_turn_set(0, TURN_SPEED);
@@ -155,7 +162,7 @@ void skills()
   chassis.pid_wait();
   chassis.pid_drive_set(24.74, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-24.74, DRIVE_SPEED);
+  chassis.pid_drive_set(-32, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_set(90, TURN_SPEED);
   chassis.pid_wait();
@@ -200,7 +207,7 @@ void skills()
   // corner
   chassis.pid_turn_set(-45, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(11.5, DRIVE_SPEED);
+  chassis.pid_drive_set(11, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_set(-45, TURN_SPEED);
   chassis.pid_wait();
@@ -228,9 +235,9 @@ void skills()
   chassis.pid_wait();
   lbe.move_absolute(250, 200);
   intake.move(127);
-  chassis.pid_drive_set(40, DRIVE_SPEED);
+  chassis.pid_drive_set(45, DRIVE_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-40, DRIVE_SPEED);
+  chassis.pid_drive_set(-45, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_set(0, TURN_SPEED);
   chassis.pid_wait();
